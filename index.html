@@ -105,28 +105,22 @@
     <div class="status" id="stat">Ready to send...</div>
 </div>
 
+<script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
+<script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-database.js"></script>
+
 <script>
-    /* JavaScript: The "Messenger" */
-    
-    // CHANGE THIS: Put your ngrok URL or Public IP here!
-    const ESP32_URL = "https://your-unique-id.ngrok-free.app";
+    // Your Firebase Config (Get this from Firebase Project Settings > Apps)
+    const firebaseConfig = {
+        databaseURL: "YOUR_DATABASE_URL_HERE"
+    };
+    firebase.initializeApp(firebaseConfig);
+    const database = firebase.database();
 
     function sendToESP(digit) {
-        const statusEl = document.getElementById('stat');
-        statusEl.innerText = "Sending " + (digit === -1 ? "Blank" : digit) + "...";
-        statusEl.style.color = "#fbbf24";
-
-        // Using Fetch to talk to the ESP32
-        fetch(`${ESP32_URL}/update?val=${digit}`, { mode: 'no-cors' })
-            .then(() => {
-                statusEl.innerText = "Command Sent Successfully!";
-                statusEl.style.color = "#10b981";
-            })
-            .catch(err => {
-                statusEl.innerText = "Error: Check Connection";
-                statusEl.style.color = "#ef4444";
-                console.error(err);
-            });
+        // This writes the number to a "path" in your database called 'currentDigit'
+        database.ref('keypad/currentDigit').set(digit)
+            .then(() => console.log("Sent: " + digit))
+            .catch(err => alert("Error: " + err));
     }
 </script>
 
