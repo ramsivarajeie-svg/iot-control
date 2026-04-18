@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ESP32 IoT Keypad</title>
+    <style>
+        /* CSS: The "Look and Feel" */
+        :root {
+            --bg: #0f172a;
+            --card: #1e293b;
+            --accent: #10b981;
+            --danger: #ef4444;
+            --text: #f8fafc;
+        }
+
+        body {
+            background-color: var(--bg);
+            color: var(--text);
+            font-family: 'Inter', system-ui, sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            margin: 0;
+        }
+
+        .container {
+            background: var(--card);
+            padding: 2rem;
+            border-radius: 24px;
+            box-shadow: 0 25px 50px -12px rgba(0,0,0,0.5);
+            text-align: center;
+            width: 100%;
+            max-width: 350px;
+            border: 1px solid rgba(255,255,255,0.1);
+        }
+
+        h1 { font-weight: 700; font-size: 1.5rem; margin-bottom: 0.5rem; color: var(--accent); }
+        p { color: #94a3b8; margin-bottom: 2rem; font-size: 0.9rem; }
+
+        .keypad {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 12px;
+        }
+
+        .btn {
+            background: #334155;
+            border: none;
+            padding: 1.5rem;
+            font-size: 1.25rem;
+            font-weight: 600;
+            color: white;
+            border-radius: 16px;
+            cursor: pointer;
+            transition: all 0.2s;
+            box-shadow: 0 4px 0 #0f172a;
+        }
+
+        .btn:hover { background: #475569; transform: translateY(-2px); }
+        .btn:active { transform: translateY(2px); box-shadow: none; background: var(--accent); color: var(--bg); }
+
+        .blank-btn {
+            grid-column: span 3;
+            background: var(--danger);
+            margin-top: 8px;
+            box-shadow: 0 4px 0 #7f1d1d;
+            text-transform: uppercase;
+            font-size: 0.9rem;
+            letter-spacing: 1px;
+        }
+
+        .status {
+            margin-top: 1.5rem;
+            font-size: 0.8rem;
+            padding: 8px;
+            border-radius: 8px;
+            background: rgba(0,0,0,0.2);
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h1>Hardware Control</h1>
+    <p>Connected via Cloud Gateway</p>
+    
+    <div class="keypad">
+        <button class="btn" onclick="sendToESP(1)">1</button>
+        <button class="btn" onclick="sendToESP(2)">2</button>
+        <button class="btn" onclick="sendToESP(3)">3</button>
+        <button class="btn" onclick="sendToESP(4)">4</button>
+        <button class="btn" onclick="sendToESP(5)">5</button>
+        <button class="btn" onclick="sendToESP(6)">6</button>
+        <button class="btn" onclick="sendToESP(7)">7</button>
+        <button class="btn" onclick="sendToESP(8)">8</button>
+        <button class="btn" onclick="sendToESP(9)">9</button>
+        <div style="grid-column: 2 / 3">
+            <button class="btn" style="width: 100%" onclick="sendToESP(0)">0</button>
+        </div>
+        <button class="btn blank-btn" onclick="sendToESP(-1)">Clear Display</button>
+    </div>
+
+    <div class="status" id="stat">Ready to send...</div>
+</div>
+
+<script>
+    /* JavaScript: The "Messenger" */
+    
+    // CHANGE THIS: Put your ngrok URL or Public IP here!
+    const ESP32_URL = "https://your-unique-id.ngrok-free.app";
+
+    function sendToESP(digit) {
+        const statusEl = document.getElementById('stat');
+        statusEl.innerText = "Sending " + (digit === -1 ? "Blank" : digit) + "...";
+        statusEl.style.color = "#fbbf24";
+
+        // Using Fetch to talk to the ESP32
+        fetch(`${ESP32_URL}/update?val=${digit}`, { mode: 'no-cors' })
+            .then(() => {
+                statusEl.innerText = "Command Sent Successfully!";
+                statusEl.style.color = "#10b981";
+            })
+            .catch(err => {
+                statusEl.innerText = "Error: Check Connection";
+                statusEl.style.color = "#ef4444";
+                console.error(err);
+            });
+    }
+</script>
+
+</body>
+</html>
