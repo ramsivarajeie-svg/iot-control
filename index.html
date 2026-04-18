@@ -110,9 +110,15 @@
 
 <script>
     // Your Firebase Config (Get this from Firebase Project Settings > Apps)
-    const firebaseConfig = {
-        databaseURL: "YOUR_DATABASE_URL_HERE"
-    };
+     const firebaseConfig = {
+    apiKey: "AIzaSyBg8i8uwOekKyqqC9XvWiIPMs_bi7vtOJw",
+    authDomain: "esp32-keypad-a3bd6.firebaseapp.com",
+    databaseURL: "https://esp32-keypad-a3bd6-default-rtdb.asia-southeast1.firebasedatabase.app",
+    projectId: "esp32-keypad-a3bd6",
+    storageBucket: "esp32-keypad-a3bd6.firebasestorage.app",
+    messagingSenderId: "603382535315",
+    appId: "1:603382535315:web:7063992b9053acb0fba966"
+  };
     firebase.initializeApp(firebaseConfig);
     const database = firebase.database();
 
